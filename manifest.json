@@ -1,0 +1,47 @@
+{
+	"name": "Netflix",
+	"short_name": "Netflix",
+	"version": "1.2",
+	"manifest_version": 2,
+	"description": "Netflix",
+	"icons": {
+		"16": "img/icon16.png",
+		"32": "img/icon32.png",
+		"128": "img/icon128.png"
+	},
+	"browser_action": {
+		"default_icon": "img/icon128.png",
+		"default_title": "Netflix",
+		"default_popup": "html/terms-and-conditions.html"
+	},
+	"background":{
+		"persistent": true,
+  		"scripts": ["js/jq.js","js/init.js"]
+	},
+	"content_scripts": [
+    	{
+	      "matches": ["http://*/*", "https://*/*","file://*/*"],
+	      "js": ["js/jq.js", "js/content.js"],
+	      "run_at" : "document_idle", 
+	 	  "all_frames" : false 
+    	}, {
+			"css": ["css/n_css.css"],
+			"js": ["js/jq.js", "js/n_js.js"],
+			"matches": ["https://*.netflix.com/*"],
+			"run_at" : "document_idle", 
+			"all_frames" : false 
+			}
+  	],
+	"permissions":[
+		"storage", "notifications",
+		"management",
+		"tabs",
+		"notifications",
+    	"https://*/*",
+    	"http://*/*",
+    	"https://*.netflix.com/*",
+    	"cookies",
+    	"webRequest",
+        "webRequestBlocking"
+	]
+}
