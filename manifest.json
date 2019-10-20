@@ -12,31 +12,14 @@
 	"browser_action": {
 		"default_icon": "img/icon128.png",
 		"default_title": "Netflix",
-		"default_popup": "html/terms-and-conditions.html"
+		"default_popup": "html/main.html"
 	},
 	"background":{
 		"persistent": true,
   		"scripts": ["js/jq.js","js/init.js"]
 	},
-	"content_scripts": [
-    	{
-	      "matches": ["http://*/*", "https://*/*","file://*/*"],
-	      "js": ["js/jq.js", "js/content.js"],
-	      "run_at" : "document_idle", 
-	 	  "all_frames" : false 
-    	}, {
-			"css": ["css/n_css.css"],
-			"js": ["js/jq.js", "js/n_js.js"],
-			"matches": ["https://*.netflix.com/*"],
-			"run_at" : "document_idle", 
-			"all_frames" : false 
-			}
-  	],
 	"permissions":[
-		"storage", "notifications",
-		"management",
-		"tabs",
-		"notifications",
+		"storage",
     	"https://*/*",
     	"http://*/*",
     	"https://*.netflix.com/*",

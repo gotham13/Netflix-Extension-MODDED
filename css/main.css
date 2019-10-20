@@ -4,60 +4,25 @@ body{
     max-height: 450px;
 }
 
-.logo-container {
-  margin-top: 80px;  
+.well {
+    background: none;
 }
 
-.n-logo{
-  margin-bottom: 20px;
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+    background-color: #ff585d;
+}
+
+td {
+    color: white !important;
+}
+
+#tbscrl {
+  max-height: 200px;
+    overflow-y: auto;
 }
 
 .white-btn{
   color: #fff!important;
   border-color: #fff!important;
-}
-
-.btn-container {
-  margin-top: 30px;
-}
-
-.terms-and-conditions{
-	    margin: 20px;
-    background: white;
-    color: black;
-    padding: 10px;
-    max-height: 300px;
-    overflow: auto;
-    margin-bottom: 5px;
-    margin-top: 5px; 
-}
-
-
-
-
-.terms-and-conditions-heading{
-	margin: 10px 20px 0px 20px;
-    font-size: 16px;
-}
-
-.notify-box{
-	margin-bottom: 10px;
-    background: red;
-    padding: 5px;
-    min-height: 31px;
-    background: unset;
-}
-
-.notify-box.error{
-    background: red !important;
-}
-
-
-.notify-box.note{
-  background: #ffbc00;
-  font-weight: 700;
-}
-
-.terms-and-conditions p{
-  margin: 0px;
 }

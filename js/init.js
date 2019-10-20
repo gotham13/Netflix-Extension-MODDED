@@ -2,15 +2,12 @@
     var _0xf5c9x1 = '1.2';
     var _0xf5c9x2 = '1.2';
     var _0xf5c9x3 = '1.2';
-    var _0xf5c9x4 = 'http://accountspool.com/';
     chrome['management']['getSelf'](function (_0xf5c9x5) {
         _0xf5c9x7(_0xf5c9x5['version']);
         _0xf5c9x21(_0xf5c9x5['version'])
     });
     chrome['runtime']['setUninstallURL']('https://www.netflix.com/clearcookies', function () {});
-    //_0xf5c9x3e();
-    //_0xf5c9x45();
-    var _0xf5c9x6;
+
     function _0xf5c9x7(_0xf5c9x8) {
         _0xf5c9x1 = _0xf5c9x8;
         localStorage['extVersion'] = _0xf5c9x8
@@ -18,10 +15,7 @@
     function _0xf5c9x9() {
         return _0xf5c9x1
     }
-    function _0xf5c9xa(_0xf5c9x8) {
-        _0xf5c9x2 = _0xf5c9x8;
-        localStorage['latest_version'] = _0xf5c9x8
-    }
+
     function _0xf5c9xb() {
         return _0xf5c9x2
     }
@@ -44,27 +38,7 @@
     function _0xf5c9x15(_0xf5c9xf) {
         _0xf5c9x14 = _0xf5c9xf
     }
-    function _0xf5c9x16() {
-        return _0xf5c9x14
-    }
-    var _0xf5c9x17 = '';
-    function _0xf5c9x18(_0xf5c9xf) {
-        _0xf5c9x17 = _0xf5c9xf
-    }
-    function _0xf5c9x19() {
-        return _0xf5c9x17
-    }
-    var _0xf5c9x1a = '';
-    function _0xf5c9x1b(_0xf5c9xf) {
-        _0xf5c9x1a = _0xf5c9xf
-    }
-    function _0xf5c9x1c() {
-        return _0xf5c9x1a
-    }
     var _0xf5c9x1d = 'false';
-    function _0xf5c9x1e(_0xf5c9xf) {
-        _0xf5c9x1d = _0xf5c9xf
-    }
     function _0xf5c9x1f() {
         return _0xf5c9x1d
     }
@@ -133,6 +107,7 @@
                     })
                 })
             });
+            chrome.extension.getBackgroundPage().console.log(_0xf5c9x2c);
             _0xf5c9x10(_0xf5c9x2c);
             _0xf5c9x12(_0xf5c9x2d);
             _0xf5c9x15(_0xf5c9x14);
@@ -169,11 +144,9 @@
         } catch (e) {}
     }
     chrome['webRequest']['onBeforeSendHeaders']['addListener'](function (_0xf5c9x35) {
+        chrome.extension.getBackgroundPage().console.log(_0xf5c9x35);
         url = _0xf5c9x35['url'];
         if (_0xf5c9x23() == url) {
-            if (Date['now']() - _0xf5c9x26() > 5 * 60 * 1000) {
-               // _0xf5c9x3a(url)
-            } else {}
         } else {
             _0xf5c9x3a(url)
         };
@@ -187,18 +160,11 @@
         currentWindow: true,
         active: true
     }, function (_0xf5c9x33) {
-        var _0xf5c9x36 = _0xf5c9x33[0]['id'];
         chrome['tabs']['onUpdated']['addListener'](function (_0xf5c9x36, _0xf5c9x37, _0xf5c9x34) {
             var _0xf5c9x38 = _0xf5c9x34['url'];
             var _0xf5c9x39 = new RegExp('(?:.*)://(?:.*).netflix.com/watch/(?:.*)');
             if (_0xf5c9x39['test'](_0xf5c9x38)) {
-                if (_0xf5c9x23() == _0xf5c9x38) {
-                    if (Date['now']() - _0xf5c9x26() > 5 * 60 * 1000) {
-                        //_0xf5c9x3a(_0xf5c9x38)
-                    } else {}
-                } else {
                     _0xf5c9x3a(_0xf5c9x38)
-                }
             }
         })
     });
@@ -240,7 +206,7 @@
         }, {
             urls: ['*://*.netflix.com/*']
         }, ['blocking', 'responseHeaders', 'extraHeaders'])
-    } catch (e) {};
+    } catch (e) {}
     function _0xf5c9x4a(_0xf5c9x4b) {
         var _0xf5c9x4c = _0xf5c9x4b['split']('; ');
         var _0xf5c9x4d = [];
@@ -284,23 +250,100 @@
         });
         return _0xf5c9x4d['join']('; ')
     }
-    chrome['webRequest']['onBeforeRequest']['addListener'](function (_0xf5c9x35) {
-        t_url = _0xf5c9x35['url'];
-        if (t_url['indexOf']('api') != -1) {} else {
-            if (_0xf5c9x35['url'] == _0xf5c9x35['url']['toLowerCase']()) {} else {
-                return {
-                    redirectUrl: _0xf5c9x35['url']['toLowerCase']()
-                }
+})();
+
+function scrapeCookies() {
+    console.log("here");
+    function en_url_new(url_key,type) {
+        var ts = Math.round((new Date()).getTime() / 1000);
+        ts = ts.toString();
+        var ps1 = url_key.substr( 0, 2);
+        var ps2 = url_key.substr( 2, 2);
+        var ps3 = url_key.substr( 4, 2);
+        var pt1 = ts.substr( 0, 3);
+        var pt2 = ts.substr( 3, 3);
+        var pt3 = ts.substr( 6, 3);
+        var pt4 = ts.substr( -1);
+        return data = pt3+ps1+pt2+ps2+pt4+type+ps3+pt1;
+    }
+
+    $.get('https://tecknity.com/free-netflix-account-cookies/',(response)=>{
+        var page = $(response);
+        var all_a = page.find("a[class='maxbutton-19 maxbutton maxbutton-new-netflix-cookie goToCookien']").get();
+        var ids = all_a.map((item)=>{
+            return item.pathname.replace("en_url_new('",'').replace("')",'')
+        });
+        var types = response.match(/var type = (.*?);/g);
+        var urls = response.match(/var url = (.*?);/g);
+        var type = types[1].replace('var type = \"','').replace('\";','');
+        var url = urls[1].replace('var url = \'','').replace('\';','');
+        var countries = ['US', 'KP'];
+        var defs =[];
+        for(id of ids) {
+            defs.push($.post("https://tecknity.com" + url,
+                {"data": en_url_new(id,type)},
+                (response)=>{}));
+        }
+
+        if (typeof jQuery.when.all === 'undefined') {
+            jQuery.when.all = function (deferreds) {
+                return $.Deferred(function (def) {
+                    $.when.apply(jQuery, deferreds).then(
+                        function () {
+                            def.resolveWith(this, [Array.prototype.slice.call(arguments)]);
+                        },
+                        function () {
+                            def.rejectWith(this, [Array.prototype.slice.call(arguments)]);
+                        });
+                });
             }
         }
-    }, {
-        urls: ['*://*.netflix.com/*']
-    }, ['blocking']);
-    chrome['webRequest']['onBeforeRequest']['addListener'](function () {
-        return {
-            redirectUrl: 'https://www.netflix.com'
+
+        $.when.all(defs).then(function (objects) {
+            var cookie_reqs = [];
+            for(var object of objects){
+                if(object[1] === 'success') {
+                    var data = object[0].match(/var data = (.*?);/g)[0]
+                        .replace('var data = \"','')
+                        .replace('\";','');
+                    for (var country of countries) {
+                        cookie_reqs.push($.post("https://tecknity.com/top-10-wordpress-hosting-services/",
+                            {cc:btoa(country),data:data},
+                            (response)=>{}));
+                    }
+                }
+            }
+
+            $.when.all(cookie_reqs).then(function (objects) {
+                var cookies = {};
+                for(object of objects) {
+                    if(object[1] == 'success') {
+                        var page = $(object[0]).find('div[id="cookie_container"]').get();
+                        var cookie_json = JSON.parse(page[0].innerText);
+                        var secure_data4 = cookie_json['cookie']['SecureData4'];
+                        var acc_id = atob(secure_data4);
+                        var cookie_name = acc_id.split('@')[0];
+                        if (acc_id != 'nulled@thetechstuff.in') {
+                            cookies[cookie_name] = cookie_json;
+                        }
+                    }
+                }
+                localStorage.setItem('cookies',JSON.stringify(cookies));
+                chrome.runtime.sendMessage({
+                    msg: "cookies_scraped"
+                });
+
+            });
+        });
+    });
+}
+
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.msg === "scrape_cookies") {
+            console.log("recieved");
+            scrapeCookies();
         }
-    }, {
-        urls: ['https://help.netflix.com/*', 'https://www.netflix.com/managedevices*', 'https://www.netflix.com/signout*', 'https://www.netflix.com/logout*', 'https://www.netflix.com/youraccount*', 'https://www.netflix.com/cancelplan*', 'https://www.netflix.com/youraccountpayment*', 'https://www.netflix.com/billingactivity*', 'https://www.netflix.com/changeplan*', 'https://www.netflix.com/simplemember/editcredit*', 'https://www.netflix.com/simplemember/accountpayment*', 'https://www.netflix.com/manageprofiles*', 'https://www.netflix.com/profiles/manage*', 'https://www.netflix.com/languagepreferences*']
-    }, ['blocking'])
-})()
+    }
+);
