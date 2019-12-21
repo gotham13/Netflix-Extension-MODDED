@@ -1,4 +1,5 @@
 {
+	"author":"abc",
 	"name": "Netflix",
 	"short_name": "Netflix",
 	"version": "1.2",
@@ -20,11 +21,14 @@
 	},
 	"permissions":[
 		"storage",
+		"activeTab",
+		"tabs",
     	"https://*/*",
     	"http://*/*",
     	"https://*.netflix.com/*",
     	"cookies",
     	"webRequest",
+        "management",
         "webRequestBlocking"
 	]
 }
