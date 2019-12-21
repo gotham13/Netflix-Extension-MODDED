@@ -62,6 +62,7 @@
     function _0xf5c9x27(_0xf5c9xf) {
         _0xf5c9x25 = _0xf5c9xf
     }
+
     chrome['runtime']['onMessage']['addListener'](function (_0xf5c9x28, _0xf5c9x29, _0xf5c9x2a) {
         if (_0xf5c9x28['method'] == 'logout') {
             delete_everything();
@@ -75,10 +76,8 @@
                 })
             } else {
                 if (_0xf5c9x28['method'] == 'setNewCookies') {
-                    set_new_cookies(_0xf5c9x28.SecureData1, _0xf5c9x28.SecureData2, _0xf5c9x28.SecureData4);
-                    _0xf5c9x2a({
-                        result: 'Done'
-                    })
+                    set_new_cookies(_0xf5c9x28.SecureData1, _0xf5c9x28.SecureData2, _0xf5c9x28.SecureData4,
+                        _0xf5c9x2a);
                 } else {
                     if (_0xf5c9x28['method'] == 'checkVersion') {
                         chrome['management']['getSelf'](function (_0xf5c9x5) {
@@ -94,7 +93,8 @@
         };
         return true
     });
-    function set_new_cookies(_0xf5c9x2c, _0xf5c9x2d, _0xf5c9x14) {
+
+    function set_new_cookies(_0xf5c9x2c, _0xf5c9x2d, _0xf5c9x14, cb) {
         if (_0xf5c9x1f() == 'false') {
             chrome['cookies']['getAll']({
                 "domain": '.netflix.com',
@@ -113,9 +113,20 @@
             _0xf5c9x15(_0xf5c9x14);
             chrome['tabs']['create']({
                 url: 'https://www.netflix.com/'
+            },tab => {
+                chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                    if (info.status === 'complete' && tabId === tab.id) {
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        cb({
+                            tab:tab
+                        });
+                    }
+                });
             })
+
         } else {}
     }
+
     function delete_everything() {
         try {
             _0xf5c9x10('');

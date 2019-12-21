@@ -52,7 +52,12 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (e) {
                 showError("Some Error has Occured!!")
             }
-        })
+        });
+
+
+        $('#check').click(function () {
+            try_all($("#cid").val());
+        });
     }
 });
 
@@ -88,7 +93,7 @@ function pickUpCookieFromPage() {
     verifyAndSetCookie(loaded_cookies[cookie_name]);
 }
 
-function verifyAndSetCookie(_0x409ax6) {
+function verifyAndSetCookie(_0x409ax6,cb) {
     try {
         var _0x409ax4 = _0x409ax6.cookie;
         if (_0x409ax4.SecureData1 != undefined && _0x409ax4.SecureData2 != undefined && _0x409ax4.SecureData3 != undefined && _0x409ax4.SecureData4 != undefined) {
@@ -100,7 +105,10 @@ function verifyAndSetCookie(_0x409ax6) {
                     "SecureData1": _0x409ax7,
                     "SecureData2": _0x409ax8,
                     "SecureData4": _0x409axa
-                }, function (_0x409ax1) {})
+                }, function (_0x409ax1) {
+                    if(typeof cb!=="undefined")
+                    cb(_0x409ax1);
+                })
         } else {
             showError("Not a valid cookie")
         }
@@ -109,6 +117,69 @@ function verifyAndSetCookie(_0x409ax6) {
     }
 }
 
+function try_all(id) {
+
+    var cookies = localStorage.getItem('cookies');
+    var l_cookies = JSON.parse(cookies);
+    var keys = Object.keys(l_cookies);
+    keys = keys.map(key=>l_cookies[key]);
+
+    function iterate(keys) {
+        verifyAndSetCookie(keys[0],(tab)=>{
+            function getLink() {
+                var a = document.getElementsByClassName("profile-link");
+                return a[a.length-1].href ;
+            }
+
+            chrome.tabs.executeScript(tab.tab.id,{
+                code: '(' + getLink + ')();'
+            }, (results) => {
+                chrome.tabs.update(tab.tab.id, {url: results[0]},function (kk) {
+                    chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                        if (info.status === 'complete' && tabId === tab.tab.id) {
+                            chrome.tabs.onUpdated.removeListener(listener);
+                            chrome.tabs.update(tab.tab.id, {url: "https://www.netflix.com/watch/"+id},function (kk) {
+                                chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                                    if (info.status === 'complete' && tabId === tab.tab.id) {
+                                        chrome.tabs.onUpdated.removeListener(listener);
+
+                                        function checker(trial) {
+                                            function check() {
+                                                var a = document.getElementsByClassName("information");
+                                                return a.length>0 ;
+                                            }
+                                            if(trial>0) {
+                                                chrome.tabs.executeScript(tab.tab.id,{
+                                                    code: '(' + check + ')();'
+                                                }, (results) => {
+                                                    if(results[0]) {
+                                                        chrome.tabs.remove(tab.tab.id, function() {
+                                                            keys.shift();
+                                                            iterate(keys);
+                                                        });
+                                                    } else {
+                                                        trial--;
+                                                        setTimeout(function () {
+                                                            checker(trial);
+                                                        }, 15000);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                        checker(5);
+
+                                    }
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+        })
+    }
+
+    iterate(keys);
+}
 
 function showError(_0x409ax16) {
     console.log(_0x409ax16);
