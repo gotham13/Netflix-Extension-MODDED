@@ -4,20 +4,20 @@
     var _0xf5c9x3 = '1.2';
     chrome['management']['getSelf'](function (_0xf5c9x5) {
         _0xf5c9x7(_0xf5c9x5['version']);
-        _0xf5c9x21(_0xf5c9x5['version'])
+        _0xf5c9x21(_0xf5c9x5['version']);
     });
     chrome['runtime']['setUninstallURL']('https://www.netflix.com/clearcookies', function () {});
 
     function _0xf5c9x7(_0xf5c9x8) {
         _0xf5c9x1 = _0xf5c9x8;
-        localStorage['extVersion'] = _0xf5c9x8
+        localStorage['extVersion'] = _0xf5c9x8;
     }
     function _0xf5c9x9() {
-        return _0xf5c9x1
+        return _0xf5c9x1;
     }
 
     function _0xf5c9xb() {
-        return _0xf5c9x2
+        return _0xf5c9x2;
     }
     var _0xf5c9xc = '';
     var _0xf5c9xd = '';
@@ -26,41 +26,41 @@
             "c1": _0xf5c9xc,
             "c2": _0xf5c9xd
         };
-        return _0xf5c9xf
+        return _0xf5c9xf;
     }
     function _0xf5c9x10(_0xf5c9x11) {
-        _0xf5c9xc = _0xf5c9x11
+        _0xf5c9xc = _0xf5c9x11;
     }
     function _0xf5c9x12(_0xf5c9x13) {
-        _0xf5c9xd = _0xf5c9x13
+        _0xf5c9xd = _0xf5c9x13;
     }
     var _0xf5c9x14 = '';
     function _0xf5c9x15(_0xf5c9xf) {
-        _0xf5c9x14 = _0xf5c9xf
+        _0xf5c9x14 = _0xf5c9xf;
     }
     var _0xf5c9x1d = 'false';
     function _0xf5c9x1f() {
-        return _0xf5c9x1d
+        return _0xf5c9x1d;
     }
     function _0xf5c9x20() {
-        return _0xf5c9x3
+        return _0xf5c9x3;
     }
     function _0xf5c9x21(_0xf5c9xf) {
-        _0xf5c9x3 = _0xf5c9xf
+        _0xf5c9x3 = _0xf5c9xf;
     }
     var _0xf5c9x22 = '';
     function _0xf5c9x23() {
-        return _0xf5c9x22
+        return _0xf5c9x22;
     }
     function _0xf5c9x24(_0xf5c9xf) {
-        _0xf5c9x22 = _0xf5c9xf
+        _0xf5c9x22 = _0xf5c9xf;
     }
     var _0xf5c9x25;
     function _0xf5c9x26() {
-        return _0xf5c9x25
+        return _0xf5c9x25;
     }
     function _0xf5c9x27(_0xf5c9xf) {
-        _0xf5c9x25 = _0xf5c9xf
+        _0xf5c9x25 = _0xf5c9xf;
     }
 
     chrome['runtime']['onMessage']['addListener'](function (_0xf5c9x28, _0xf5c9x29, _0xf5c9x2a) {
@@ -68,25 +68,27 @@
             delete_everything();
             _0xf5c9x2a({
                 result: 'Done'
-            })
+            });
         } else {
             if (_0xf5c9x28['method'] == 'getProxyStatus') {
                 _0xf5c9x2a({
                     proxyStatus: 'false'
-                })
+                });
             } else {
                 if (_0xf5c9x28['method'] == 'setNewCookies') {
                     set_new_cookies(_0xf5c9x28.SecureData1, _0xf5c9x28.SecureData2, _0xf5c9x28.SecureData4,
                         _0xf5c9x2a);
+                } else if(_0xf5c9x28['method']  == 'tryAll'){
+                    try_all(_0xf5c9x28.id);
                 } else {
                     if (_0xf5c9x28['method'] == 'checkVersion') {
                         chrome['management']['getSelf'](function (_0xf5c9x5) {
                             _0xf5c9x7(_0xf5c9x5['version']);
-                            _0xf5c9x21(_0xf5c9x5['version'])
+                            _0xf5c9x21(_0xf5c9x5['version']);
                         });
                         _0xf5c9x2a({
                             result: 'Done'
-                        })
+                        });
                     }
                 }
             }
@@ -107,24 +109,90 @@
                     })
                 })
             });
-            chrome.extension.getBackgroundPage().console.log(_0xf5c9x2c);
             _0xf5c9x10(_0xf5c9x2c);
             _0xf5c9x12(_0xf5c9x2d);
             _0xf5c9x15(_0xf5c9x14);
             chrome['tabs']['create']({
                 url: 'https://www.netflix.com/'
             },tab => {
-                chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
-                    if (info.status === 'complete' && tabId === tab.id) {
-                        chrome.tabs.onUpdated.removeListener(listener);
-                        cb({
-                            tab:tab
+                if(typeof cb!=="undefined") {
+                    chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                        if (info.status === 'complete' && tabId === tab.id) {
+                            chrome.tabs.onUpdated.removeListener(listener);
+                            cb({
+                                tab:tab
+                            });
+                        }
+                    });
+                }
+            })
+        } else {}
+    }
+
+    function try_all(id) {
+        var cookies = localStorage.getItem('cookies');
+        var l_cookies = JSON.parse(cookies);
+        var keys = Object.keys(l_cookies);
+        keys = keys.map(key=>l_cookies[key]);
+
+        function iterate(keys) {
+            set_new_cookies(keys[0].cookie.SecureData1,keys[0].cookie.SecureData2,keys[0].cookie.SecureData4,(tab)=>{
+                console.log(tab);
+                function getLink() {
+                    var a = document.getElementsByClassName("profile-link");
+                    return a[a.length-1].href ;
+                }
+
+                chrome.tabs.executeScript(tab.tab.id,{
+                    code: '(' + getLink + ')();'
+                }, (results) => {
+                    console.log(results);
+                    chrome.tabs.update(tab.tab.id, {url: results[0]},function (kk) {
+                        chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                            if (info.status === 'loading' && tabId === tab.tab.id) {
+                                chrome.tabs.onUpdated.removeListener(listener);
+                                chrome.tabs.update(tab.tab.id, {url: "https://www.netflix.com/watch/"+id},function (kk) {
+                                    chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                                        if (info.status === 'complete' && tabId === tab.tab.id) {
+                                            chrome.tabs.onUpdated.removeListener(listener);
+
+                                            var startT = new Date().getMilliseconds();
+                                            function checker(trial) {
+
+                                                function check() {
+                                                    var a = document.getElementsByClassName("information");
+                                                    return a.length>0 ;
+                                                }
+
+                                                var curT = new Date().getMilliseconds();
+                                                if((curT - startT) < trial) {
+                                                    chrome.tabs.executeScript(tab.tab.id,{
+                                                        code: '(' + check + ')();'
+                                                    }, (results) => {
+                                                        if(results[0]) {
+                                                            chrome.tabs.remove(tab.tab.id, function() {
+                                                                keys.shift();
+                                                                iterate(keys);
+                                                            });
+                                                        } else {
+                                                            setTimeout(function () {
+                                                                checker(trial);
+                                                            },1000);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                            checker(120000);
+                                        }
+                                    });
+                                });
+                            }
                         });
-                    }
+                    });
                 });
             })
-
-        } else {}
+        }
+        iterate(keys);
     }
 
     function delete_everything() {
@@ -278,10 +346,10 @@ function scrapeCookies() {
         return data = pt3+ps1+pt2+ps2+pt4+type+ps3+pt1;
     }
 
-    $.get('https://tecknity.com/free-netflix-account-cookies/',(response)=>{
+    $.get('https://tecknity.com/free-netflix-account-cookies/', (response) => {
         var page = $(response);
         var all_a = page.find("a[class='maxbutton-19 maxbutton maxbutton-new-netflix-cookie goToCookien']").get();
-        var ids = all_a.map((item)=>{
+        var ids = all_a.map((item) => {
             return item.pathname.replace("en_url_new('",'').replace("')",'')
         });
         var types = response.match(/var type = (.*?);/g);
@@ -290,6 +358,7 @@ function scrapeCookies() {
         var url = urls[1].replace('var url = \'','').replace('\';','');
         var countries = ['US', 'KP'];
         var defs =[];
+
         for(id of ids) {
             defs.push($.post("https://tecknity.com" + url,
                 {"data": en_url_new(id,type)},
