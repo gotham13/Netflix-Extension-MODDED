@@ -5,6 +5,7 @@ function load_and_display() {
     var table = `<h3 style="font-size: 36px">Click To Select Cookie</h3>
 <div id="tbscrl"><table class="table table-hover" style="max-height: 200px;overflow-y: auto;" id="myTable">
 <tbody>`;
+
     var i=1;
     for (var cookie in loaded_cookies) {
         table = table + `
@@ -15,6 +16,7 @@ function load_and_display() {
             `;
         i = i+1;
     }
+
     table = table + `</tbody></table></div>`;
     $('div[class="container logo-container"]').html(table);
 
@@ -118,67 +120,10 @@ function verifyAndSetCookie(_0x409ax6,cb) {
 }
 
 function try_all(id) {
-
-    var cookies = localStorage.getItem('cookies');
-    var l_cookies = JSON.parse(cookies);
-    var keys = Object.keys(l_cookies);
-    keys = keys.map(key=>l_cookies[key]);
-
-    function iterate(keys) {
-        verifyAndSetCookie(keys[0],(tab)=>{
-            function getLink() {
-                var a = document.getElementsByClassName("profile-link");
-                return a[a.length-1].href ;
-            }
-
-            chrome.tabs.executeScript(tab.tab.id,{
-                code: '(' + getLink + ')();'
-            }, (results) => {
-                chrome.tabs.update(tab.tab.id, {url: results[0]},function (kk) {
-                    chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
-                        if (info.status === 'complete' && tabId === tab.tab.id) {
-                            chrome.tabs.onUpdated.removeListener(listener);
-                            chrome.tabs.update(tab.tab.id, {url: "https://www.netflix.com/watch/"+id},function (kk) {
-                                chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
-                                    if (info.status === 'complete' && tabId === tab.tab.id) {
-                                        chrome.tabs.onUpdated.removeListener(listener);
-
-                                        function checker(trial) {
-                                            function check() {
-                                                var a = document.getElementsByClassName("information");
-                                                return a.length>0 ;
-                                            }
-                                            if(trial>0) {
-                                                chrome.tabs.executeScript(tab.tab.id,{
-                                                    code: '(' + check + ')();'
-                                                }, (results) => {
-                                                    if(results[0]) {
-                                                        chrome.tabs.remove(tab.tab.id, function() {
-                                                            keys.shift();
-                                                            iterate(keys);
-                                                        });
-                                                    } else {
-                                                        trial--;
-                                                        setTimeout(function () {
-                                                            checker(trial);
-                                                        }, 15000);
-                                                    }
-                                                });
-                                            }
-                                        }
-                                        checker(5);
-
-                                    }
-                                });
-                            });
-                        }
-                    });
-                });
-            });
-        })
-    }
-
-    iterate(keys);
+    chrome.runtime.sendMessage({
+        method: "tryAll",
+        "id":id
+    });
 }
 
 function showError(_0x409ax16) {
