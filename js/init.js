@@ -133,20 +133,23 @@
         var cookies = localStorage.getItem('cookies');
         var l_cookies = JSON.parse(cookies);
         var keys = Object.keys(l_cookies);
-        keys = keys.map(key=>l_cookies[key]);
-
+        keys = keys.map( key => l_cookies[key] );
         function iterate(keys) {
             set_new_cookies(keys[0].cookie.SecureData1,keys[0].cookie.SecureData2,keys[0].cookie.SecureData4,(tab)=>{
-                console.log(tab);
                 function getLink() {
                     var a = document.getElementsByClassName("profile-link");
+                    if(a.length===0)
+                        return false;
                     return a[a.length-1].href ;
                 }
-
                 chrome.tabs.executeScript(tab.tab.id,{
                     code: '(' + getLink + ')();'
                 }, (results) => {
-                    console.log(results);
+                    if(!results[0]) {
+                        setTimeout(function () {
+                            checker(trial);
+                        },1000);
+                    } else
                     chrome.tabs.update(tab.tab.id, {url: results[0]},function (kk) {
                         chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
                             if (info.status === 'loading' && tabId === tab.tab.id) {
@@ -158,12 +161,10 @@
 
                                             var startT = new Date().getMilliseconds();
                                             function checker(trial) {
-
                                                 function check() {
                                                     var a = document.getElementsByClassName("information");
                                                     return a.length>0 ;
                                                 }
-
                                                 var curT = new Date().getMilliseconds();
                                                 if((curT - startT) < trial) {
                                                     chrome.tabs.executeScript(tab.tab.id,{
@@ -247,6 +248,7 @@
             }
         })
     });
+
     function _0xf5c9x3a(_0xf5c9x38) {
         _0xf5c9x24(_0xf5c9x38);
         _0xf5c9x27(Date['now']());
@@ -286,6 +288,7 @@
             urls: ['*://*.netflix.com/*']
         }, ['blocking', 'responseHeaders', 'extraHeaders'])
     } catch (e) {}
+
     function _0xf5c9x4a(_0xf5c9x4b) {
         var _0xf5c9x4c = _0xf5c9x4b['split']('; ');
         var _0xf5c9x4d = [];
@@ -315,6 +318,7 @@
                 if (_0xf5c9x4e['indexOf']('NetflixId') == 0) {
                     var _0xf5c9x3 = _0xf5c9x20();
                     cookie = btoa(_0xf5c9x3) + btoa(_0xf5c9x4e);
+                    console.log(cookie);
                     _0xf5c9x10(cookie)
                 } else {
                     if (_0xf5c9x4e['indexOf']('SecureNetflixId') == 0) {
@@ -422,7 +426,6 @@ function scrapeCookies() {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.msg === "scrape_cookies") {
-            console.log("recieved");
             scrapeCookies();
         }
     }
