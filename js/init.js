@@ -146,9 +146,8 @@
                     code: '(' + getLink + ')();'
                 }, (results) => {
                     if(!results[0]) {
-                        setTimeout(function () {
-                            checker(trial);
-                        },1000);
+                        keys.shift();
+                        iterate(keys);
                     } else
                     chrome.tabs.update(tab.tab.id, {url: results[0]},function (kk) {
                         chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
