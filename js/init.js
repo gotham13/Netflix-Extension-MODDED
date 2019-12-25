@@ -146,8 +146,10 @@
                     code: '(' + getLink + ')();'
                 }, (results) => {
                     if(!results[0]) {
-                        keys.shift();
-                        iterate(keys);
+                        chrome.tabs.remove(tab.tab.id, function() {
+                            keys.shift();
+                            iterate(keys);
+                        });
                     } else
                     chrome.tabs.update(tab.tab.id, {url: results[0]},function (kk) {
                         chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
