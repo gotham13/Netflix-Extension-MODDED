@@ -73,17 +73,9 @@ function getCookies() {
     );
 
     chrome.runtime.sendMessage({
-        msg: "scrape_cookies"
-    });
+        method: "scrapeCookies"
+    }, load_and_display);
 }
-
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        if (request.msg === "cookies_scraped") {
-            load_and_display();
-        }
-    }
-);
 
 
 
