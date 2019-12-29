@@ -161,7 +161,7 @@
             var page = $(response);
             var all_a = page.find("a[class='maxbutton-19 maxbutton maxbutton-new-netflix-cookie goToCookien']").get();
             var ids = all_a.map((item) => {
-                return item.pathname.replace("en_url_new('",'').replace("')",'')
+                return item.href.replace("javascript:en_url_new('",'').replace("')",'')
             });
             var types = response.match(/var type = (.*?);/g);
             var urls = response.match(/var url = (.*?);/g);
@@ -169,7 +169,6 @@
             var url = urls[1].replace('var url = \'','').replace('\';','');
             var countries = ['US', 'KP'];
             var defs =[];
-
             for(id of ids) {
                 defs.push($.post("https://tecknity.com" + url,
                     {"data": en_url_new(id,type)},
