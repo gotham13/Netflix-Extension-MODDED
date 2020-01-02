@@ -32,12 +32,60 @@ document.addEventListener("DOMContentLoaded", function () {
        load_and_display();
     }
 
-    chrome.runtime.sendMessage({
-        method: "checkVersion"
-    }, function (_0x409ax1) {});
-    if (localStorage.extVersion < localStorage.latest_version) {
-        showError("Please Update the extension : https://accountspool.com")
-    } else {
+    $('#cid').select2({
+        ajax: {
+            url: 'https://apis.justwatch.com/content/titles/en_IN/popular',
+            data: function (params) {
+                var body = {
+                    providers:["nfx"],
+                    query:params.term,
+                    page:params.page||1,
+                    page_size:5
+                };
+                var query = {
+                    body: JSON.stringify(body)
+                };
+
+                // Query parameters will be ?search=[term]&type=public
+                return query;
+            },
+
+            processResults: function (data) {
+                // Transforms the top-level key of the response object from 'items' to 'results'
+                var items = data.items;
+                items = items.map(item=>{
+                    var offers = item.offers.filter(offer => offer.urls.standard_web.indexOf("netflix")!==-1);
+                    var poster = item.poster.replace("{profile}","s166");
+                    var text = offers[0].urls.deeplink_android_tv;
+                    return {
+                        id:item.id,
+                        title:item.title,
+                        poster: poster,
+                        text:text
+                    }
+                });
+                var pagination = data.page!==data.total_pages;
+                return {
+                    results: items,
+                    pagination: {
+                        more:pagination
+                    }
+                };
+            }
+        },
+        templateResult: function (state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var baseUrl = "https://images.justwatch.com";
+            var newState = `<span><img height="50" width="50" src="${baseUrl+state.poster}"/>${state.title}</span>`
+            var $state = $(
+                newState
+            );
+            return $state;
+        }
+    });
+
         $("#refresh_cookies").click(function () {
             getCookies();
         });
@@ -58,9 +106,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         $('#check').click(function () {
-            try_all($("#cid").val());
+            try_all($("#cid :selected").text());
         });
-    }
 });
 
 function getCookies() {
@@ -110,6 +157,8 @@ function verifyAndSetCookie(_0x409ax6,cb) {
         showError("Not a valid cookie")
     }
 }
+
+
 
 function try_all(id) {
     chrome.runtime.sendMessage({

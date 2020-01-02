@@ -5,7 +5,9 @@
 	<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" href="../css/now-ui-kit.min.css" />
 	<link rel="stylesheet" type="text/css" href="../css/main.css" />
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 	<script src="../js/jq.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
 	<script src="../js/main.js"></script>
 </head>
 <body>
@@ -19,10 +21,16 @@
 							</div>
 							<div>Fetching cookies please wait..</div>
 						</div>
-						<div class="container btn-container" style="padding-top: 10px">
+						<div class="container btn-container" style="padding-top: 0;">
+							<div class="row">
+								<div class="col-md-12 col-12">
+								<button id="use-cookie" class="white-btn btn btn-simple btn-round btn-primary btn-lg">Use Cookie</button>
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-md-4 col-8" style="margin: auto; margin-right: 0;">
-									<input type="text" class="form-control " autocomplete id="cid" placeholder="Content Id">
+									<select id="cid" style="width: 300px;">
+									</select>
 								</div>
 								<div class="col-md-4 col-4">
 									<button id="check" class="white-btn btn btn-simple btn-round btn-primary btn-sm">Try All Cookies</button>
@@ -30,18 +38,12 @@
 							</div>
 							<div class="row">
 										<div class="col-md-6 col-6">
-												<button id="refresh_cookies" class="white-btn btn btn-simple btn-round btn-primary btn-lg">Refresh Cookies</button>
+											<button id="refresh_cookies" class="white-btn btn btn-simple btn-round btn-primary btn-lg">Refresh Cookies</button>
 										</div>
 										<div class="col-md-6 col-6">
-												<button id="use-cookie" class="white-btn btn btn-simple btn-round btn-primary btn-lg">Use Cookie</button>
+											<button id="logout" class="white-btn btn btn-simple btn-round btn-primary btn-lg">Logout</button>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12 col-12">
-												<button id="logout" class="white-btn btn btn-simple btn-round btn-primary btn-lg">Logout</button>
-										</div>
-									</div>
-
+							</div>
 						</div>
 				</div>
 		</div>
