@@ -17,7 +17,7 @@
 	},
 	"background":{
 		"persistent": true,
-  		"scripts": ["js/jq.js","js/init.js"]
+  		"scripts": ["js/jq.js","js/init.js","js/select2.js"]
 	},
 	"permissions":[
 		"storage",
